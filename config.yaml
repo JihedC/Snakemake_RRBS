@@ -1,0 +1,8 @@
+---
+units: units.tsv
+sample: samples.tsv
+
+# files and directories
+working_dir: "temp/"
+result_dir: "results/"
+data_dir: "/exports/humgen/jihed/bigwig_for_analysis/atac_data/"

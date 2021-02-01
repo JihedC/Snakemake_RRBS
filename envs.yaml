@@ -1,0 +1,10 @@
+channels:
+  - conda-forge
+  - bioconda
+  - r
+  - defaults
+dependencies:
+  - trim-galore=0.6.6
+  - bismark=0.23.0
+  - samtools=1.11
+  - star=2.7.7a
