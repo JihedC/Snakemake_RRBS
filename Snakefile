@@ -52,9 +52,9 @@ rule trim:
 	input:
         	get_fastq
 	output:
-        	sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
+		sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
 		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq"
-    	conda:
+	conda:
 		"envs.yaml"
 	shell:
         	"trim_galore --rrbs --paired -o trimmed/ {input.read} 2> trim.log"
