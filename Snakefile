@@ -17,7 +17,7 @@ WORKING_DIR             = config["working_dir"]
 SAMPLE_DIR              = config["sample_dir"]
 GENOME_DIR              = config["genome_dir"]
 RESULT_DIR              = config["result_dir"]
-DATA_DIR                = config["data_dir"]
+#DATA_DIR                = config["data_dir"]
 
 ################## Samples ##################
 
@@ -95,8 +95,8 @@ rule align:
 		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq",
 		genome = GENOME_DIR
 	output:
-		RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
-		RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_PE_report.txt"
+		RESULT_DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
+		RESULT_DIR + "bismark/{sample}_1_val_1_bismark_bt2_PE_report.txt"
 	conda:
 		"envs.yaml"
 	shell:
@@ -105,10 +105,10 @@ rule align:
 
 rule methyl_ex:
 	input:
-        	RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
+		RESULT_DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
 		genome = GENOME_DIR
 	output:
-        	RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz"
+		RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz"
 	conda:
 		"envs.yaml"
 	shell:
