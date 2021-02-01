@@ -49,7 +49,7 @@ rule all:
 			c
 rule trim:
 	input:
-        reads = get_fastq
+        get_fastq
 	output:
         sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
 		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq"
