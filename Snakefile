@@ -17,7 +17,7 @@ WORKING_DIR             = config["working_dir"]
 SAMPLE_DIR              = config["sample_dir"]
 GENOME_DIR              = config["genome_dir"]
 RESULT_DIR              = config["result_dir"]
-DATA_DIR                = config["data_dir"]
+#DATA_DIR                = config["data_dir"]
 
 ################## Samples ##################
 
@@ -57,7 +57,7 @@ rule trim:
 	conda:
 		"envs.yaml"
 	shell:
-        	"trim_galore --rrbs --paired -o trimmed/ {input.read} 2> trim.log"
+        	"trim_galore --rrbs --paired -o trimmed/ {input} 2> trim.log"
 
 
 rule CpGisland_finder:
@@ -95,8 +95,8 @@ rule align:
 		sample2 = RESULT_DIR + "trimmed/{samples}_2_val_2.fq",
 		genome = GENOME_DIR
 	output:
-		RESULT_DIR + DIR + "bismark/{samples}_1_val_1_bismark_bt2_pe.bam",
-		RESULT_DIR + DIR + "bismark/{samples}_1_val_1_bismark_bt2_PE_report.txt"
+		RESULT_DIR + "bismark/{samples}_1_val_1_bismark_bt2_pe.bam",
+		RESULT_DIR + "bismark/{samples}_1_val_1_bismark_bt2_PE_report.txt"
 	conda:
 		"envs.yaml"
 	shell:
@@ -105,11 +105,11 @@ rule align:
 
 rule methyl_ex:
 	input:
-        	RESULT_DIR + DIR + "bismark/{samples}_1_val_1_bismark_bt2_pe.bam",
+        	RESULT_DIR + "bismark/{samples}_1_val_1_bismark_bt2_pe.bam",
 		genome = GENOME_DIR
 	output:
         	RESULT_DIR + "methyl/{samples}_1_val_1_bismark_bt2_pe.bedGraph.gz"
 	conda:
 		"envs.yaml"
 	shell:
-		"bismark_methylation_extractor --paired-end --zero_based --remove_spaces --ignore_r2 2 --bedGraph --cytosine_report --buffer_size 10G --genome_folder {input.genome} -o methyl/ {input.sample} 2> met_ex.log"
+		"bismark_methylation_extractor --paired-end --zero_based --remove_spaces --ignore_r2 2 --bedGraph --cytosine_report --buffer_size 10G --genome_folder {input.genome} -o methyl/ {input} 2> met_ex.log"
