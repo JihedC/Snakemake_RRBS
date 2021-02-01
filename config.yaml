@@ -5,4 +5,5 @@ sample: samples.tsv
 # files and directories
 working_dir: "temp/"
 result_dir: "results/"
-data_dir: "/exports/humgen/jihed/bigwig_for_analysis/atac_data/"
+sample_dir: "/exports/humgen/jihed/rrbs_zbtb24/fastq/"
+genome_dir: "/exports/humgen/jihed/rrbs_zbtb24/reference"
