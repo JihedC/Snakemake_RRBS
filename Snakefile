@@ -45,70 +45,71 @@ rule all:
 	message:
 		"All done!"
 	input:
-			expand(RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz", sample=SAMPLES)
-			c
+			expand(RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz", sample=SAMPLES),
+
+
 rule trim:
 	input:
-        get_fastq
+        	get_fastq
 	output:
-        sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
+        	sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
 		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq"
-    conda:
+    	conda:
 		"envs.yaml"
 	shell:
-        "trim_galore --rrbs --paired -o trimmed/ {input.read} 2> trim.log"
+        	"trim_galore --rrbs --paired -o trimmed/ {input.read} 2> trim.log"
 
 
 rule CpGisland_finder:
 	input:
-        GENOME_DIR + "mm10.reference.fa"
+        	GENOME_DIR + "mm10.reference.fa"
 	output:
-        RESULT_DIR + "CpGislands.gtf"
+        	RESULT_DIR + "CpGislands.gtf"
 	shell:
-        "python CpGislandsFind.py {input} > {output}"
+        	"python CpGislandsFind.py {input} > {output}"
 
 
 rule gtf_to_bed:
 	input:
-        RESULT_DIR + "CpGislands.gtf"
+        	RESULT_DIR + "CpGislands.gtf"
 	output:
-        RESULT_DIR + "CpGislands.bed"
+		RESULT_DIR + "CpGislands.bed"
 	shell:
-        """
-		 awk -F "\\t" '{{OFS="\\t"; print $2, $4, $5, "CpGisland", $6, $7}}' {input} > {output}
-	    """
+		"""
+		awk -F "\\t" '{{OFS="\\t"; print $2, $4, $5, "CpGisland", $6, $7}}' {input} > {output} 
+		"""
 
 rule genome_prep:
 	input:
-        GENOME_DIR
+        	GENOME_DIR
 	output:
-        GENOME_DIR + "Bisulfite_Genome"
-    conda:
+        	GENOME_DIR + "Bisulfite_Genome"
+    	conda:
 		"envs.yaml"
 	shell:
-        "bismark_genome_preparation --verbose {input}"
+        	"bismark_genome_preparation --verbose {input}"
 
 rule align:
 	input:
-        sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
+        	sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
 		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq",
 		genome = GENOME_DIR
 	output:
-        RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
+        	RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
 		RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_PE_report.txt"
-    conda:
+    	conda:
 		"envs.yaml"
 	shell:
-        "bismark --genome {input.genome} -1 {input.sample1} -2 {input.sample2} 2> alig.log"
+        	"bismark --genome {input.genome} -1 {input.sample1} -2 {input.sample2} 2> alig.log"
 
 
 rule methyl_ex:
 	input:
-        RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
+        	RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
 		genome = GENOME_DIR
 	output:
-        RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz"
-    conda:
+        	RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz"
+	conda:
 		"envs.yaml"
 	shell:
-        "bismark_methylation_extractor --paired-end --zero_based --remove_spaces --ignore_r2 2 --bedGraph --cytosine_report --buffer_size 10G --genome_folder {input.genome} -o methyl/ {input.sample} 2> met_ex.log"
+		"bismark_methylation_extractor --paired-end --zero_based --remove_spaces --ignore_r2 2 --bedGraph --cytosine_report --buffer_size 10G --genome_folder {input.genome} -o methyl/ {input.sample} 2> met_ex.log"
