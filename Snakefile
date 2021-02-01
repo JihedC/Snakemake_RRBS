@@ -17,7 +17,7 @@ WORKING_DIR             = config["working_dir"]
 SAMPLE_DIR              = config["sample_dir"]
 GENOME_DIR              = config["genome_dir"]
 RESULT_DIR              = config["result_dir"]
-#DATA_DIR                = config["data_dir"]
+DATA_DIR                = config["data_dir"]
 
 ################## Samples ##################
 
@@ -45,15 +45,15 @@ rule all:
 	message:
 		"All done!"
 	input:
-			expand(RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz", sample=SAMPLES),
+			expand(RESULT_DIR + "methyl/{samples}_1_val_1_bismark_bt2_pe.bedGraph.gz", samples=SAMPLES),
 
 
 rule trim:
 	input:
         	get_fastq
 	output:
-		sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
-		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq"
+		sample1 = RESULT_DIR + "trimmed/{samples}_1_val_1.fq",
+		sample2 = RESULT_DIR + "trimmed/{samples}_2_val_2.fq"
 	conda:
 		"envs.yaml"
 	shell:
@@ -76,7 +76,7 @@ rule gtf_to_bed:
 		RESULT_DIR + "CpGislands.bed"
 	shell:
 		"""
-		awk -F "\\t" '{{OFS="\\t"; print $2, $4, $5, "CpGisland", $6, $7}}' {input} > {output} 
+		awk -F "\\t" '{{OFS="\\t"; print $2, $4, $5, "CpGisland", $6, $7}}' {input} > {output}
 		"""
 
 rule genome_prep:
@@ -91,12 +91,12 @@ rule genome_prep:
 
 rule align:
 	input:
-		sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
-		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq",
+		sample1 = RESULT_DIR + "trimmed/{samples}_1_val_1.fq",
+		sample2 = RESULT_DIR + "trimmed/{samples}_2_val_2.fq",
 		genome = GENOME_DIR
 	output:
-		RESULT_DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
-		RESULT_DIR + "bismark/{sample}_1_val_1_bismark_bt2_PE_report.txt"
+		RESULT_DIR + DIR + "bismark/{samples}_1_val_1_bismark_bt2_pe.bam",
+		RESULT_DIR + DIR + "bismark/{samples}_1_val_1_bismark_bt2_PE_report.txt"
 	conda:
 		"envs.yaml"
 	shell:
@@ -105,10 +105,10 @@ rule align:
 
 rule methyl_ex:
 	input:
-		RESULT_DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
+        	RESULT_DIR + DIR + "bismark/{samples}_1_val_1_bismark_bt2_pe.bam",
 		genome = GENOME_DIR
 	output:
-		RESULT_DIR + "methyl/{sample}_1_val_1_bismark_bt2_pe.bedGraph.gz"
+        	RESULT_DIR + "methyl/{samples}_1_val_1_bismark_bt2_pe.bedGraph.gz"
 	conda:
 		"envs.yaml"
 	shell:
