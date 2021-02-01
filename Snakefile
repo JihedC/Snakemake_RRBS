@@ -81,26 +81,26 @@ rule gtf_to_bed:
 
 rule genome_prep:
 	input:
-        	GENOME_DIR
+		GENOME_DIR
 	output:
-        	GENOME_DIR + "Bisulfite_Genome"
-    	conda:
+		GENOME_DIR + "Bisulfite_Genome"
+	conda:
 		"envs.yaml"
 	shell:
-        	"bismark_genome_preparation --verbose {input}"
+		"bismark_genome_preparation --verbose {input}"
 
 rule align:
 	input:
-        	sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
+		sample1 = RESULT_DIR + "trimmed/{sample}_1_val_1.fq",
 		sample2 = RESULT_DIR + "trimmed/{sample}_2_val_2.fq",
 		genome = GENOME_DIR
 	output:
-        	RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
+		RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_pe.bam",
 		RESULT_DIR + DIR + "bismark/{sample}_1_val_1_bismark_bt2_PE_report.txt"
-    	conda:
+	conda:
 		"envs.yaml"
 	shell:
-        	"bismark --genome {input.genome} -1 {input.sample1} -2 {input.sample2} 2> alig.log"
+		"bismark --genome {input.genome} -1 {input.sample1} -2 {input.sample2} 2> alig.log"
 
 
 rule methyl_ex:
